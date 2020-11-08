@@ -5,6 +5,7 @@ using System.IO;
 using System.Data;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Naloga3
 {
@@ -15,18 +16,29 @@ namespace Naloga3
 
             List<Zaposleni> seznam = new List<Zaposleni>();
 
-            seznam.Add(new Zaposleni() {id = 1, employee_name = "Naziv 1", employee_age = 45, employee_salary = 30000 });
-            seznam.Add(new Zaposleni() { id = 2, employee_name = "Naziv 2", employee_age = 55, employee_salary = 45000 });
-            seznam.Add(new Zaposleni() { id = 3, employee_name = "Naziv 3", employee_age = 60, employee_salary = 39000 });
-            //TODO: saldjlkasda
+            seznam.Add(new Zaposleni() {id = 100, employee_name = "Naziv 100", employee_age = 45, employee_salary = 30000 });
+            seznam.Add(new Zaposleni() { id = 101, employee_name = "Naziv 101", employee_age = 55, employee_salary = 45000 });
+            seznam.Add(new Zaposleni() { id = 102, employee_name = "Naziv 102", employee_age = 60, employee_salary = 39000 });
+            seznam.Add(new Zaposleni() { id = 103, employee_name = "Naziv 103", employee_age = 48, employee_salary = 8000 });
+            seznam.Add(new Zaposleni() { id = 104, employee_name = "Naziv 104", employee_age = 74, employee_salary = 19000 });
+
+            //TODO: Ustvari metodo, ki bo izpisala seznam
             foreach (var zap in seznam)
             {
                 Console.WriteLine($"{zap.id} {zap.employee_name }");
             }
+            double povprecnaplaca = seznam.Average(s => s.employee_salary);
+            Console.WriteLine("Povprečna plača: " + String.Format("{0}",povprecnaplaca));
+
+            var seznamnadpovpresno = from sez in seznam
+                                     where sez.employee_salary > povprecnaplaca
+                                     select sez;
+
+                                     //    seznam.Where(s => s.employee_salary > 15000);
+
 
             Console.WriteLine("Branje in izpis Json");
-            Console.ReadLine();
-
+          
             string vsebina = Vrnivsebino("http://dummy.restapiexample.com/api/v1/employees");
             
 
@@ -43,8 +55,6 @@ namespace Naloga3
                 Console.Write(" employee_salary: " + zap["employee_salary"]);
                 Console.Write(" employee_age: " + zap["employee_age"]);
                 Console.WriteLine();
-
-
 
                 seznam.Add(new Zaposleni() { id = (int)zap["id"], employee_name = (string)zap["employee_name"],  employee_age = (int)zap["employee_age"], employee_salary = (double)zap["employee_salary"] });
 
@@ -78,16 +88,7 @@ namespace Naloga3
                 Console.WriteLine($"{zap.id},  {zap.employee_name}, {zap.employee_salary}, {zap.employee_age }");
             }
 
-            //   Console.WriteLine("Data");
-            //  Console.WriteLine($"{json.SelectToken("data")}");
-
-            //  vsebina = json.SelectToken("data").ToString();
-
-            //  JObject json1 = JObject.Parse(vsebina);
-
-            //  Console.WriteLine($"{vsebina}");
-
-            //  Console.WriteLine($"{json1.Count}");
+           
 
         }
 

@@ -12,49 +12,63 @@ namespace ConsoleApp2
         static void Main(string[] args)
         {
             
-         
-            double minvred = 100;
-            double maxvred = 200;
+            // A
+            int minvred = 100;
+            int maxvred = 200;
+            /*
+            Console.WriteLine("Naključna števila med {0} in {1}", minvred, maxvred);
+            Console.WriteLine(vrniNakljucnoStevilo(minvred, maxvred));
+            Console.WriteLine(vrniNakljucnoStevilo(minvred, maxvred));
+            Console.WriteLine(vrniNakljucnoStevilo(minvred, maxvred));
 
+            Console.WriteLine("Naključna števila med -10 in 20");
+            Console.WriteLine(vrniNakljucnoStevilo(-10, 20));
+            Console.WriteLine(vrniNakljucnoStevilo(-10, 20));
+            Console.WriteLine(vrniNakljucnoStevilo(-10, 20));
+            
+            Console.WriteLine("Naključna števila med 0 in 10");
+            Console.WriteLine(String.Format("{0,15:N9}", vrniNakljucnoStevilo(0, 10)));
+            Console.WriteLine(String.Format("{0,15:N9}", vrniNakljucnoStevilo(0, 10)));
+            Console.WriteLine(String.Format("{0,15:N9}", vrniNakljucnoStevilo(0, 10)));
 
-            string ime_datoteke;
+            Console.ReadKey();
+            //System.Environment.Exit(1);
+            */
+
+            string imeDatoteke;
             Console.WriteLine("Vnesite ime datoteke (npr. test.txt)!");
-            ime_datoteke = Console.ReadLine();
+            imeDatoteke = Console.ReadLine();
 
-//            Console.WriteLine($"{rnd.NextDouble() * maxvred + minvred}");
-  //          Console.WriteLine($"{rnd.Next(0, 10)}");
-    //        Console.WriteLine($"{rnd.Next(0, 10)}");
-
+            Console.ReadKey();
             //če datoteka ne obstaja kreiramo vsebino
-            if (!File.Exists(ime_datoteke)) {
-                Console.WriteLine("Kreiramo datoteko!");
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(ime_datoteke))
-                {
+            if (!File.Exists(imeDatoteke)) {
+                Console.WriteLine("Datoteka ne obstaj: Datoteka bo ustvarjena!");
 
-                    //kreiramo 100 naključnih števil
-                    for (int i = 0; i < 100; i++)
-                    {
-                        
-                            file.WriteLine(vrniNakljucnoStevilo(minvred, maxvred).ToString());
-                         
-                    }
-                }
+                kreirajDatotekoZNakljucnimiStevili(imeDatoteke, 10, minvred, maxvred);
+                Console.WriteLine("Datoteko ustvarjena!");
             } else
             {
                 Console.WriteLine("Datoteko obstaja!");
             }
             //izpišermo vsebino datoteke
-            preberiInIzpisiDatoteko(ime_datoteke);
+       
+          
+            preberiInIzpisiDatoteko(imeDatoteke);
+            Console.WriteLine("Vsebina datoteke: {0:30}", imeDatoteke);
 
-            List<double> seznam = preberiVSeznamDatoteko(ime_datoteke);
+            Console.ReadKey();
+            Console.WriteLine("Povprečne vrednosti prebrane datoteke!");
 
-            Console.WriteLine("Max: " + seznam.Max());
-            Console.WriteLine("Min: " + seznam.Min());
-            Console.WriteLine("Avg: " + seznam.Average());
+            List<double> seznam = preberiVSeznamDatoteko(imeDatoteke);
+
+            Console.WriteLine("Max: " + seznam.Max() + "   " + String.Format("{0,15:N5}", najvecja(seznam)));
+            Console.WriteLine("Min: " + seznam.Min() + String.Format("{0,15:N5}", najmanjsa(seznam)));
+            Console.WriteLine("Avg: " + seznam.Average() + String.Format("{0,15:N5}", povprecna(seznam)));
             Console.WriteLine("Sum: " + seznam.Sum());
-
              
+            Console.ReadKey();
 
+            Console.WriteLine("Povprečne vrednosti prebrane datoteke!");
             //shranimo v seznam
             List<double> seznam1 = seznam.Where(e => (e > seznam.Average())).ToList();
             foreach (double stevilo in seznam1)
@@ -75,7 +89,6 @@ namespace ConsoleApp2
         {
             Random rnd = new Random();
             return (rnd.NextDouble() * (p_do-p_od) + p_od);
-
         }
 
         static void preberiInIzpisiDatoteko(string imedatoteke)
@@ -85,7 +98,6 @@ namespace ConsoleApp2
             int i = 0;
             while ((vrstica = datoteka.ReadLine()) != null)
             {
-
                 System.Console.WriteLine(++i + ". " + vrstica);
                  
             }
@@ -93,6 +105,20 @@ namespace ConsoleApp2
             datoteka.Close();
         }
 
+        static void kreirajDatotekoZNakljucnimiStevili(string imedatoteke, int stevilo, int minvred, int maxvred)
+        {
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(imedatoteke))
+            {
+                //kreiramo 100 naključnih števil
+                for (int i = 0; i < stevilo; i++)
+                {
+
+                    file.WriteLine(vrniNakljucnoStevilo(minvred, maxvred).ToString());
+
+                }
+            }
+            
+        }
         static List<double> preberiVSeznamDatoteko(string imedatoteke)
         {
             List<double> seznam = new List<double>();
@@ -101,13 +127,46 @@ namespace ConsoleApp2
             string vrstica;
             while ((vrstica = datoteka.ReadLine()) != null)
             {
-                seznam.Add ( Double.Parse(vrstica));
+                seznam.Add (Double.Parse(vrstica));
             }
 
             datoteka.Close();
             return seznam;
 
         }
-        
+
+        static double najmanjsa(List<double> pseznam)
+        {
+            double trenMin = 9999999;
+
+            foreach (double vrednost in pseznam)
+            {
+                trenMin = trenMin > vrednost ? trenMin = vrednost : trenMin;
+            }
+            return trenMin;
+        }
+        static double najvecja(List<double> pseznam)
+        {
+            double trenMax = -9999999;
+
+            foreach (double vrednost in pseznam)
+            {
+                trenMax = trenMax < vrednost ? trenMax = vrednost : trenMax;
+            }
+            return trenMax;
+        }
+
+        static double povprecna(List<double> pseznam)
+        {
+            double sestevek = 0;
+
+            foreach (double vrednost in pseznam)
+            {
+                sestevek += vrednost;
+                
+            }
+            return (pseznam.Count> 0 ? sestevek / pseznam.Count : 0);
+        }
+
     }
 }
